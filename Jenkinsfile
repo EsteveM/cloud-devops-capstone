@@ -23,6 +23,7 @@ pipeline {
                         echo "Docker ID and Image: $dockerpath"
                         my_password="$DOCKER_PASSWORD"
                         echo "$my_password" | docker login --username $DOCKER_USERNAME --password-stdin
+                        docker push $dockerpath
                     '''
                 }
             }
