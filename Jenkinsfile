@@ -21,7 +21,8 @@ pipeline {
                     sh '''
                         dockerpath="$DOCKER_USERNAME/cloudcapstone"
                         echo "Docker ID and Image: $dockerpath"
-                        docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+                        my_password="$DOCKER_PASSWORD"
+                        echo "$my_password" | docker login --username $DOCKER_USERNAME --password-stdin
                     '''
                 }
             }
