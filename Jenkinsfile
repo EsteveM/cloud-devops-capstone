@@ -1,9 +1,9 @@
 pipeline {
     agent any
     stages {
-        stage('Presentation Step') {
+        stage('Linting') {
             steps {
-                sh 'echo "This is the Capstone Project pipeline"'
+                sh 'tidy -q -e *.html'
             }
         }
     }
