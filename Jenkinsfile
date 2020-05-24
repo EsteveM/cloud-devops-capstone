@@ -5,7 +5,7 @@ pipeline {
             steps {
                 sh 'tidy -q -e *.html'
             }
-        }
+        } 
         stage('Build the Docker image') {
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
@@ -13,6 +13,11 @@ pipeline {
                         docker build -t esteve55/cloudcapstone .
                     '''
                 }
+            }
+        }
+        stage('Security Testing with Aqua') {
+            steps { 
+                aquaMicroscanner imageName: 'esteve55/cloudcapstone', notCompleted: 'exit 1', onDisallowed: 'fail'
             }
         }
         stage('Upload image to Docker') {
