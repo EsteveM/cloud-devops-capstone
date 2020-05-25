@@ -17,7 +17,7 @@ pipeline {
         }
         stage('Security Testing with Aqua') {
             steps { 
-                aquaMicroscanner imageName: 'esteve55/cloudcapstone', notCompleted: 'exit 1', onDisallowed: 'fail'
+                aquaMicroscanner imageName: 'esteve55/cloudcapstone', notCompliesCmd: 'exit 1', onDisallowed: 'fail', outputFormat: 'html'
             }
         }
         stage('Upload image to Docker') {
