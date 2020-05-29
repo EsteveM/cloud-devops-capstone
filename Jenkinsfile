@@ -33,11 +33,19 @@ pipeline {
                 }
             }
         }
-        stage('Set current kubctl context to the cluster') {
+        stage('Create a configuration file for kubectl cluster') {
             steps {
                 withAWS(region:'us-west-2',credentials:'aws-static') {
                     sh '''
                         aws eks --region us-west-2 update-kubeconfig --name capstonecluster
+                    '''
+                }
+            }
+        }
+        stage('Set current kubctl context to the cluster') {
+            steps {
+                withAWS(region:'us-west-2',credentials:'aws-static') {
+                    sh '''
                         kubectl config use-context arn:aws:eks:us-west-2:609124127185:cluster/capstonecluster
                     '''
                 }
