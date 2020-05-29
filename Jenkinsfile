@@ -1,15 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Create a configuration file for kubectl cluster') {
-            steps {
-                withAWS(region:'us-west-2',credentials:'aws-static') {
-                    sh '''
-                        aws eks --region us-west-2 update-kubeconfig --name capstonecluster
-                    '''
-                }
-            }
-        }
         stage('Linting') {
             steps {
                 sh 'tidy -q -e *.html'
