@@ -14,8 +14,6 @@ pipeline {
                         --nodes 3 \
                         --nodes-min 1 \
                         --nodes-max 4 \
-                        --ssh-access \
-                        --ssh-public-key my-public-key.pub \
                         --managed
                     '''
                 }
