@@ -51,5 +51,49 @@ pipeline {
                 }
             }
         }
+        stage('Create the blue replication controller with its docker image') {
+            steps {
+                withAWS(region:'us-west-2',credentials:'aws-static') {
+                    sh '''
+                        kubectl apply -f ./blue-controller.json
+                    '''
+                }
+            }
+        }
+        stage('Create the green replication controller with its docker image') {
+            steps {
+                withAWS(region:'us-west-2',credentials:'aws-static') {
+                    sh '''
+                        kubectl apply -f ./green-controller.json
+                    '''
+                }
+            }
+        }
+        stage('Create the service in kubernetes cluster to the blue replication controller') {
+            steps {
+                withAWS(region:'us-west-2',credentials:'aws-static') {
+                    sh '''
+                        # Create the service in kubernetes cluster in charge of routing traffic
+                        # to the blue replication controller and exposing it to the outside
+                        # world by setting the selector to app=blue
+                        kubectl apply -f ./blue-service.json
+                    '''
+                }
+            }
+        }
+        stage('Wait until the user gives the instruction to continue') {
+            steps {
+                input('Do you want to redirect to green?')
+            }
+        }
+        stage('Update the service to redirect to green by changing the selector to app=green') {
+            steps {
+                withAWS(region:'us-west-2',credentials:'aws-static') {
+                    sh '''
+                        kubectl apply -f ./green-service.json
+                    '''
+                }
+            }
+        }
     }
 }
