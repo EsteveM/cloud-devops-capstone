@@ -1,6 +1,26 @@
 pipeline {
     agent any
     stages {
+        stage('Create the kubernetes cluster') {
+            steps {
+                withAWS(region:'us-west-2',credentials:'aws-static') {
+                    sh '''
+                        eksctl create cluster \
+                        --name capstonecluster \
+                        --version 1.16 \
+                        --region us-west-2 \
+                        --nodegroup-name standard-workers \
+                        --node-type t2.micro \
+                        --nodes 3 \
+                        --nodes-min 1 \
+                        --nodes-max 4 \
+                        --ssh-access \
+                        --ssh-public-key my-public-key.pub \
+                        --managed
+                    '''
+                }
+            }
+        }
         stage('Linting') {
             steps {
                 sh 'tidy -q -e *.html'
@@ -77,15 +97,13 @@ pipeline {
                         # to the blue replication controller and exposing it to the outside
                         # world by setting the selector to app=blue
                         kubectl apply -f ./blue-service.json
-                        kubectl get services
-                        kubectl get pods
                     '''
                 }
             }
         }
         stage('Wait until the user gives the instruction to continue') {
             steps {
-                input('Do you want to redirect to green?')
+                input('Does the blue deployment look ok, and do you want to deploy to green?')
             }
         }
         stage('Update the service to redirect to green by changing the selector to app=green') {
@@ -93,8 +111,20 @@ pipeline {
                 withAWS(region:'us-west-2',credentials:'aws-static') {
                     sh '''
                         kubectl apply -f ./green-service.json
-                        kubectl get services
+                    '''
+                }
+            }
+        }
+        stage('Check the application deployed in the cluster and its correct deployment') {
+            steps {
+                withAWS(region:'us-west-2',credentials:'aws-static') {
+                    sh '''
+                        # Verify deployed application is running. Existing pods must be running.                        # must be running
                         kubectl get pods
+                        # Obtain information and IP of the service. It can be found as 
+                        # "LOAD_BALANCER_INGRESS + : + PORT", and subsequently accessed from
+                        # the browser. 
+                        kubectl describe service bluegreenlb
                     '''
                 }
             }
