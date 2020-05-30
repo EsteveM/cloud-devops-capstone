@@ -77,6 +77,8 @@ pipeline {
                         # to the blue replication controller and exposing it to the outside
                         # world by setting the selector to app=blue
                         kubectl apply -f ./blue-service.json
+                        kubectl get services
+                        kubectl get pods
                     '''
                 }
             }
@@ -91,6 +93,8 @@ pipeline {
                 withAWS(region:'us-west-2',credentials:'aws-static') {
                     sh '''
                         kubectl apply -f ./green-service.json
+                        kubectl get services
+                        kubectl get pods
                     '''
                 }
             }
