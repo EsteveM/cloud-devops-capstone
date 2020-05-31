@@ -22,7 +22,7 @@
              "containers":[
                 {
                    "name":"green",
-                   "image":"andresaaap/testgreenimage",
+                   "image":"esteve55/cloudcapstone",
                    "ports":[
                       {
                          "name":"http-server",

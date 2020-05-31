@@ -33,38 +33,53 @@ Apart from the steps in the pipeline, and as already mentioned, it is necessary 
 
 In this section, it can be seen how the pipeline works as designed.
 
-### Setup the Environment
+### Creating the Kubernetes cluster
 
-* Clone this project repository, and cd to the main project folder.
-* Create a virtualenv and activate it. Run `python3 -m venv ~/.devops` and `source ~/.devops/bin/activate`.
-* Run `make install` to install the necessary dependencies.
-* Install Docker to build and upload a containerized application. To this end, [create a Docker account](https://hub.docker.com/), and [install the latest stable release](https://docs.docker.com/get-docker/).
-* [Install hadolint](https://github.com/hadolint/hadolint) to check the Dockerfile for errors, and [install pylint](https://pypi.org/project/pylint/) to check the Python app source code for errors.
-* Install VirtualBox running `brew cask install virtualbox` for Mac, and minikube by running `brew cask install minikube` for Mac as well. For Windows, see [here for VirtualBox](https://www.virtualbox.org/wiki/Downloads) and [here for minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/).
+As a first previous step, the Kubernetes cluster is created, as can be seen below.
 
-### Running `app.py`
+![script1](/ScreenShots/script1.png)
 
-1. Standalone:  `python app.py`.
-2. Run in Docker:  `./run_docker.sh`.
-3. Run in Kubernetes:  `./run_kubernetes.sh`.
+### Running the pipeline
 
-To make a prediction, please open a separate tab or terminal window, cd to the main project folder, if you are not already there, and run `./make_prediction.sh`. Please, note that the app must be running in order to make predictions.
-
-For completeness, note that once you have already built the docker image with `./run_docker.sh`, you can upload the image to Docker Hub by running `./upload_docker.sh`.
-
-### Kubernetes Steps
-
-* Setup and Configure Docker locally.
-* Setup and Configure Kubernetes locally.
-* Create Flask app in Container.
-* Run via kubectl.
+* Test application code using linting. Below, both a failed Linting screenshot and a successful Linting screenshot are shown.
+![script1](/ScreenShots/script1.png)
+![script1](/ScreenShots/script1.png)
+* Build a Docker image that containerizes the application, a simple Nginx one.
+![script1](/ScreenShots/script1.png)
+* Perform security testing with Aqua Microscanner.
+![script1](/ScreenShots/script1.png)
+* Deploy the containerized application using Docker.
+![script1](/ScreenShots/script1.png)
+* Create a configuration file for the kubectl cluster.
+![script1](/ScreenShots/script1.png)
+* Set the current kubctl context to the cluster.
+![script1](/ScreenShots/script1.png)
+* Create the blue replication controller with its Docker image.
+![script1](/ScreenShots/script1.png)
+* Create the green replication controller with its Docker image.
+![script1](/ScreenShots/script1.png)
+* Create the service in the Kubernetes cluster to the blue replication controller.
+![script1](/ScreenShots/script1.png)
+* Wait until the user gives the instruction to continue.
+![script1](/ScreenShots/script1.png)
+* Update the service to redirect to green by changing the selector to app=green.
+![script1](/ScreenShots/script1.png)
+* Check the application deployed in the cluster and its correct deployment.
+![script1](/ScreenShots/script1.png)
 
 ## Repository Files
 
 In this section, the repository files are described:
 
-* *.circleci/config.yml*: identifies how to set up the testing environment and what tests to run on CircleCI.
-* *model_data*: files in this folder are related to the pre-trained, sklearn model that has been trained to predict housing prices in Boston.
+* *create-kubernetes-cluster/Manual-Jenkinsfile*: this is a Jenkins file which implements a pipeline that has two steps. The first one creates the Kubernetes cluster, and the second one creates the corresponding configuration file. This file has been provided for convenience, but it is not part of the main pipeline.
+* *blue-controller.json*: this file specifies the replication controller blue pod.
+* *blue-service.json*: this file specifies the blue service.
+* *Dockerfile*: contains all the commands to assemble the image.
+* *green-controller.json*: this file specifies the replication controller green pod.
+* *green-service.json*: this file specifies the green service.
+* *index.html*: simple html file that makes up the application.
+
+
 * *output_txt_files/docker_out.txt*: it includes all log statements when making a prediction with the app running in Docker.
 * *output_txt_files/kubernetes_out.txt*: it includes all log statements when making a prediction with the app running in Kubernetes.
 * *app py*: Python flask app that infers predictions about housing prices through API calls.
