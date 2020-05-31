@@ -1,24 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Create the kubernetes cluster') {
-            steps {
-                withAWS(region:'us-west-2',credentials:'aws-static') {
-                    sh '''
-                        eksctl create cluster \
-                        --name capstonecluster \
-                        --version 1.16 \
-                        --region us-west-2 \
-                        --nodegroup-name standard-workers \
-                        --node-type t2.micro \
-                        --nodes 3 \
-                        --nodes-min 1 \
-                        --nodes-max 4 \
-                        --managed
-                    '''
-                }
-            }
-        }
         stage('Linting') {
             steps {
                 sh 'tidy -q -e *.html'

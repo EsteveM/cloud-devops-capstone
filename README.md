@@ -35,37 +35,45 @@ In this section, it can be seen how the pipeline works as designed.
 
 ### Creating the Kubernetes cluster
 
-As a first previous step, the Kubernetes cluster is created, as can be seen below.
+As a first previous step, the Kubernetes cluster is created, as can be seen below. Firstly, in the pipeline as a step which can be removed from the pipeline afterwards, but which has been included here for convenience. Secondly, in AWS CloudFormation. Finaly, in AWS Elastic Kubernetes Service.
 
-![script1](/ScreenShots/script1.png)
+![0-KubernetesClusterCreation](/ScreenShots/0-KubernetesClusterCreation.png)
+![0-KubernetesClusterCreation2](/ScreenShots/0-KubernetesClusterCreation2.png)
+![0-KubernetesClusterCreation3](/ScreenShots/0-KubernetesClusterCreation3.png)
 
 ### Running the pipeline
 
+From now on, the pipeline itself is run, and its stages are shown below.
+
 * Test application code using linting. Below, both a failed Linting screenshot and a successful Linting screenshot are shown.
 ![script1](/ScreenShots/script1.png)
-![script1](/ScreenShots/script1.png)
+![2-SuccessfulLintingScreenshot](/ScreenShots/2-SuccessfulLintingScreenshot.png)
 * Build a Docker image that containerizes the application, a simple Nginx one.
-![script1](/ScreenShots/script1.png)
+![3-BuildtheDockerImage](/ScreenShots/3-BuildtheDockerImage.png)
 * Perform security testing with Aqua Microscanner.
-![script1](/ScreenShots/script1.png)
-* Deploy the containerized application using Docker.
-![script1](/ScreenShots/script1.png)
+![4-SecurityTestingwithAqua](/ScreenShots/4-SecurityTestingwithAqua.png)
+* Deploy the containerized application using Docker. Both the action in the pipeline and on DockerHub are shown.
+![5-UploadtheImagetoDocker](/ScreenShots/5-UploadtheImagetoDocker.png)
+![5-UploadtheImagetoDocker2](/ScreenShots/5-UploadtheImagetoDocker2.png)
 * Create a configuration file for the kubectl cluster.
-![script1](/ScreenShots/script1.png)
+![6-Createaconfigurationfileforkubectlcluster](/ScreenShots/6-Createaconfigurationfileforkubectlcluster.png)
 * Set the current kubctl context to the cluster.
-![script1](/ScreenShots/script1.png)
+![7-Setthecurrentkubctlcontexttothecluster](/ScreenShots/7-Setthecurrentkubctlcontexttothecluster.png)
 * Create the blue replication controller with its Docker image.
-![script1](/ScreenShots/script1.png)
+![8-CreatethebluereplicationcontrollerwithitsDockerimage](/ScreenShots/8-CreatethebluereplicationcontrollerwithitsDockerimage.png)
 * Create the green replication controller with its Docker image.
-![script1](/ScreenShots/script1.png)
+![9-CreatethegreenreplicationcontrollerwithitsDockerimage](/ScreenShots/9-CreatethegreenreplicationcontrollerwithitsDockerimage.png)
 * Create the service in the Kubernetes cluster to the blue replication controller.
-![script1](/ScreenShots/script1.png)
-* Wait until the user gives the instruction to continue.
-![script1](/ScreenShots/script1.png)
+![10-CreatetheserviceintheKubernetesclustertothebluereplicationcontroller](/ScreenShots/10-CreatetheserviceintheKubernetesclustertothebluereplicationcontroller.png)
+* Wait until the user gives the instruction to continue. The interaction with the user and the logged result are both shown.
+![11-Waituntiltheusergivestheinstructiontocontinue](/ScreenShots/11-Waituntiltheusergivestheinstructiontocontinue.png)
+![11-Waituntiltheusergivestheinstructiontocontinue2](/ScreenShots/11-Waituntiltheusergivestheinstructiontocontinue2.png)
 * Update the service to redirect to green by changing the selector to app=green.
-![script1](/ScreenShots/script1.png)
-* Check the application deployed in the cluster and its correct deployment.
-![script1](/ScreenShots/script1.png)
+![12-Updatetheservicetoredirecttogreenbychangingtheselectortoapp=green](/ScreenShots/12-Updatetheservicetoredirecttogreenbychangingtheselectortoapp=green.png)
+* Check the application deployed in the cluster and its correct deployment. Firstly, we can see in the pipeline logs that the deployed application is running, as both pods are running. Secondly, with the obtained IP of the service (see at "LOAD_BALANCER_INGRESS + : + PORT"), we successfully access the application via the browser. Finally, a screenshot of the AWS EC2 page showing the newly created instances is also shown. Three instances can be seen just below the Jenkins masterbox. 
+![13-CheckSuccessfulDeployment](/ScreenShots/13-CheckSuccessfulDeployment.png)
+![13-CheckSuccessfulDeployment2](/ScreenShots/13-CheckSuccessfulDeployment2.png)
+![13-CheckSuccessfulDeployment2](/ScreenShots/13-CheckSuccessfulDeployment2.png)
 
 ## Repository Files
 
@@ -78,18 +86,8 @@ In this section, the repository files are described:
 * *green-controller.json*: this file specifies the replication controller green pod.
 * *green-service.json*: this file specifies the green service.
 * *index.html*: simple html file that makes up the application.
-
-
-* *output_txt_files/docker_out.txt*: it includes all log statements when making a prediction with the app running in Docker.
-* *output_txt_files/kubernetes_out.txt*: it includes all log statements when making a prediction with the app running in Kubernetes.
-* *app py*: Python flask app that infers predictions about housing prices through API calls.
-* *Dockerfile*: contains all the commands to assemble the image.
-* *make_prediction.sh*: it sends some input data to the app via the appropriate port.
-* *Makefile*: the Makefile makes it possible to include a number of commands in it, and run them. In particular, this Makefile allows us to run commands to perform the setup, install, test, and lint steps.
-* *requirements.txt*: it lists many of the project dependencies.
-* *run_docker.sh*: it runs the containerized application, by building and running the docker image defined in the Dockerfile.
-* *run_kubernetes.sh*: it deploys the application on a Kubernetes cluster, and the docker container is subsequently run.
-* *upload_docker.sh*: it uploads the built image to Docker.
+* *Jenkinsfile*: this file contains the pipeline which is the main goal of this project.
+* */Screenshots*: this folder contains a number of screenshots to show the correct workings of the project.
 
 ## Contributing
 
