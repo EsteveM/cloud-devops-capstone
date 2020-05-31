@@ -46,7 +46,7 @@ As a first previous step, the Kubernetes cluster is created, as can be seen belo
 From now on, the pipeline itself is run, and its stages are shown below.
 
 * Test application code using linting. Below, both a failed Linting screenshot and a successful Linting screenshot are shown.
-![script1](/ScreenShots/script1.png)
+![1-FailedLintingScreenshot](/ScreenShots/1-FailedLintingScreenshot.png)
 ![2-SuccessfulLintingScreenshot](/ScreenShots/2-SuccessfulLintingScreenshot.png)
 * Build a Docker image that containerizes the application, a simple Nginx one.
 ![3-BuildtheDockerImage](/ScreenShots/3-BuildtheDockerImage.png)
@@ -73,7 +73,7 @@ From now on, the pipeline itself is run, and its stages are shown below.
 * Check the application deployed in the cluster and its correct deployment. Firstly, we can see in the pipeline logs that the deployed application is running, as both pods are running. Secondly, with the obtained IP of the service (see at "LOAD_BALANCER_INGRESS + : + PORT"), we successfully access the application via the browser. Finally, a screenshot of the AWS EC2 page showing the newly created instances is also shown. Three instances can be seen just below the Jenkins masterbox. 
 ![13-CheckSuccessfulDeployment](/ScreenShots/13-CheckSuccessfulDeployment.png)
 ![13-CheckSuccessfulDeployment2](/ScreenShots/13-CheckSuccessfulDeployment2.png)
-![13-CheckSuccessfulDeployment2](/ScreenShots/13-CheckSuccessfulDeployment2.png)
+![13-CheckSuccessfulDeployment3](/ScreenShots/13-CheckSuccessfulDeployment3.png)
 
 ## Repository Files
 
